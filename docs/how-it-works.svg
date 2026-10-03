@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="530" viewBox="0 0 1280 530" role="img" aria-labelledby="t d">
+  <title id="t">How Review Responder works</title>
+  <desc id="d">1. Load reviews from CSV, pasted text or Google. 2. Your brand.yaml sets the voice. 3. Claude writes each reply, or built-in templates do if there is no API key. 4. You check the reply, sentiment and follow-up flag, then edit, copy, export or post it.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1f4f"/>
+      <stop offset="0.6" stop-color="#432a66"/>
+      <stop offset="1" stop-color="#6e3560"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#12091f" flood-opacity="0.4"/>
+    </filter>
+    <marker id="head" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#ffd36e"/>
+    </marker>
+    <marker id="headMuted" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#a79bd0"/>
+    </marker>
+    <path id="sparkle" d="M0,-12 C2,-2 2,-2 12,0 C2,2 2,2 0,12 C-2,2 -2,2 -12,0 C-2,-2 -2,-2 0,-12Z"/>
+  </defs>
+
+  <rect width="1280" height="530" rx="24" fill="url(#bg)"/>
+
+  <g font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+
+    <!-- column panels -->
+    <g fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.12">
+      <rect x="40" y="95" width="270" height="320" rx="18"/>
+      <rect x="350" y="95" width="270" height="320" rx="18"/>
+      <rect x="660" y="95" width="270" height="320" rx="18"/>
+      <rect x="970" y="95" width="270" height="320" rx="18"/>
+    </g>
+
+    <!-- step headings -->
+    <g font-size="20" font-weight="700" fill="#ffffff">
+      <circle cx="62" cy="60" r="18" fill="#ffd36e"/>
+      <text x="62" y="67" text-anchor="middle" fill="#2a1f4f">1</text>
+      <text x="90" y="67">Bring your reviews</text>
+
+      <circle cx="372" cy="60" r="18" fill="#9fe3c8"/>
+      <text x="372" y="67" text-anchor="middle" fill="#2a1f4f">2</text>
+      <text x="400" y="67">Set your brand voice</text>
+
+      <circle cx="682" cy="60" r="18" fill="#ff9fb2"/>
+      <text x="682" y="67" text-anchor="middle" fill="#2a1f4f">3</text>
+      <text x="710" y="67">Write the replies</text>
+
+      <circle cx="992" cy="60" r="18" fill="#c9b8f2"/>
+      <text x="992" y="67" text-anchor="middle" fill="#2a1f4f">4</text>
+      <text x="1020" y="67">You review &amp; send</text>
+    </g>
+
+    <!-- 1: sources -->
+    <g filter="url(#shadow)">
+      <rect x="60" y="125" width="230" height="50" rx="12" fill="#fff6e8"/>
+      <rect x="60" y="190" width="230" height="50" rx="12" fill="#fff6e8"/>
+      <rect x="60" y="255" width="230" height="50" rx="12" fill="#fff6e8"/>
+    </g>
+    <!-- CSV icon: little grid -->
+    <g fill="none" stroke="#b8860b" stroke-width="2">
+      <rect x="76" y="138" width="24" height="24" rx="3" fill="#ffd36e" fill-opacity="0.5"/>
+      <path d="M76 146 H100 M76 154 H100 M88 138 V162"/>
+    </g>
+    <!-- text icon: lines -->
+    <g stroke="#1f7a55" stroke-width="2" stroke-linecap="round">
+      <rect x="76" y="203" width="24" height="24" rx="3" fill="#9fe3c8" fill-opacity="0.6" stroke="none"/>
+      <path d="M81 210 H95 M81 215 H95 M81 220 H90"/>
+    </g>
+    <!-- google icon: G -->
+    <circle cx="88" cy="280" r="12" fill="#ff9fb2" fill-opacity="0.6"/>
+    <text x="88" y="286" font-size="16" font-weight="800" fill="#8a3f62" text-anchor="middle">G</text>
+    <g font-size="16" font-weight="600" fill="#2a1f4f">
+      <text x="114" y="156">CSV file</text>
+      <text x="114" y="221">Pasted text</text>
+      <text x="114" y="279" font-size="15">Google Business</text>
+      <text x="114" y="296" font-size="12" font-weight="400" fill="#7a6f8f">Profile (or demo data)</text>
+    </g>
+    <g font-size="14" fill="#d9d2ff" text-anchor="middle">
+      <text x="175" y="355">Each one becomes a review:</text>
+      <text x="175" y="375">author, stars and text</text>
+    </g>
+
+    <!-- 2: brand.yaml -->
+    <g filter="url(#shadow)">
+      <rect x="370" y="120" width="230" height="200" rx="12" fill="#1b1433"/>
+    </g>
+    <circle cx="386" cy="137" r="4" fill="#ff9fb2"/>
+    <circle cx="398" cy="137" r="4" fill="#ffd36e"/>
+    <circle cx="410" cy="137" r="4" fill="#9fe3c8"/>
+    <text x="586" y="141" font-size="12" fill="#8a82a0" text-anchor="end" font-family="Consolas, Menlo, monospace">brand.yaml</text>
+    <g font-family="Consolas, Menlo, monospace" font-size="13" fill="#e6defc">
+      <text x="384" y="172"><tspan fill="#9fe3c8">tone:</tspan> warm, playful</text>
+      <text x="384" y="194"><tspan fill="#9fe3c8">max_words:</tspan> 90</text>
+      <text x="384" y="216"><tspan fill="#9fe3c8">sign_off:</tspan> Priya &amp; crew</text>
+      <text x="384" y="238"><tspan fill="#9fe3c8">dont:</tspan></text>
+      <text x="400" y="260">- offer refunds</text>
+      <text x="384" y="282"><tspan fill="#9fe3c8">examples:</tspan></text>
+      <text x="400" y="304">- review → reply</text>
+    </g>
+    <g font-size="14" fill="#d9d2ff" text-anchor="middle">
+      <text x="485" y="355">Tone, rules and examples</text>
+      <text x="485" y="375">shape every reply</text>
+    </g>
+
+    <!-- arrows between columns -->
+    <path d="M312 245 H344" stroke="#ffd36e" stroke-width="3" marker-end="url(#head)"/>
+    <path d="M622 245 H654" stroke="#ffd36e" stroke-width="3" marker-end="url(#head)"/>
+
+    <!-- 3: fork -->
+    <path d="M664 245 C690 245 680 168 712 168" fill="none" stroke="#ffd36e" stroke-width="3" marker-end="url(#head)"/>
+    <path d="M664 245 C690 245 680 312 712 312" fill="none" stroke="#a79bd0" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#headMuted)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="716" y="122" width="196" height="92" rx="12" fill="#fff6e8"/>
+    </g>
+    <use href="#sparkle" transform="translate(890 142) scale(0.8)" fill="#f5a623"/>
+    <text x="732" y="146" font-size="12" font-weight="700" fill="#8a3f62" letter-spacing="1">API KEY SET</text>
+    <text x="732" y="174" font-size="19" font-weight="800" fill="#2a1f4f">Claude writes it</text>
+    <text x="732" y="198" font-size="13" fill="#5a5070">several reviews at once</text>
+
+    <rect x="716" y="268" width="196" height="88" rx="12" fill="#ffffff" fill-opacity="0.04" stroke="#a79bd0" stroke-width="2" stroke-dasharray="6 5"/>
+    <text x="732" y="292" font-size="12" font-weight="700" fill="#c9b8f2" letter-spacing="1">NO API KEY</text>
+    <text x="732" y="318" font-size="17" font-weight="700" fill="#e6defc">Built-in templates</text>
+    <text x="732" y="340" font-size="13" fill="#bfb3e6">works offline, free</text>
+
+    <text x="795" y="390" font-size="14" fill="#d9d2ff" text-anchor="middle">Every review gets its own reply</text>
+
+    <!-- merge into column 4 -->
+    <path d="M912 168 C935 168 930 245 964 245" fill="none" stroke="#ffd36e" stroke-width="3" marker-end="url(#head)"/>
+    <path d="M912 312 C935 312 930 245 950 245" fill="none" stroke="#a79bd0" stroke-width="2.5" stroke-dasharray="6 6"/>
+
+    <!-- 4: reply card -->
+    <g filter="url(#shadow)">
+      <rect x="985" y="118" width="240" height="196" rx="12" fill="#fff6e8"/>
+    </g>
+    <rect x="1000" y="132" width="76" height="22" rx="11" fill="#ffd6de"/>
+    <text x="1038" y="148" font-size="12" font-weight="600" fill="#a3324f" text-anchor="middle">negative</text>
+    <rect x="1084" y="132" width="122" height="22" rx="11" fill="#ffe7a8"/>
+    <path d="M1096 137 V150 M1096 137 H1106 L1103 141 L1106 145 H1096" fill="#b8860b" stroke="#b8860b" stroke-width="1.5" stroke-linejoin="round"/>
+    <text x="1112" y="148" font-size="12" font-weight="600" fill="#7a5a00">needs follow-up</text>
+    <g font-size="14" fill="#3a3350">
+      <text x="1000" y="182">So sorry, Sam, that's not the</text>
+      <text x="1000" y="202">visit we want for you. Email</text>
+      <text x="1000" y="222">us and we'll make it right.</text>
+    </g>
+    <text x="1000" y="246" font-size="13" font-style="italic" fill="#7a6f8f">— Priya &amp; crew</text>
+    <line x1="1000" y1="262" x2="1210" y2="262" stroke="#e8dccb"/>
+    <text x="1000" y="286" font-size="12" fill="#7a6f8f"><tspan font-weight="700">Note:</tspan> cold coffee, slow service</text>
+
+    <g font-size="13" font-weight="700" text-anchor="middle">
+      <rect x="985" y="330" width="58" height="30" rx="15" fill="#ffffff" fill-opacity="0.12" stroke="#c9b8f2"/>
+      <text x="1014" y="350" fill="#ffffff">Edit</text>
+      <rect x="1051" y="330" width="96" height="30" rx="15" fill="#ffffff" fill-opacity="0.12" stroke="#c9b8f2"/>
+      <text x="1099" y="350" fill="#ffffff">Copy / CSV</text>
+      <rect x="1155" y="330" width="70" height="30" rx="15" fill="#ffd36e"/>
+      <text x="1190" y="350" fill="#2a1f4f">Post ✓</text>
+    </g>
+    <text x="1105" y="390" font-size="14" fill="#d9d2ff" text-anchor="middle">Nothing posts until you confirm</text>
+
+    <!-- bottom notes -->
+    <line x1="40" y1="445" x2="1240" y2="445" stroke="#ffffff" stroke-opacity="0.12"/>
+    <!-- shield -->
+    <path d="M70 465 L84 470 V480 C84 489 78 494 70 497 C62 494 56 489 56 480 V470 Z" fill="#9fe3c8" fill-opacity="0.85"/>
+    <path d="M64 481 L69 486 L77 476" fill="none" stroke="#1f5f47" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="98" y="487" font-size="15" fill="#e6defc">Review text is treated as data, so instructions hidden in a review are ignored.</text>
+    <!-- retry -->
+    <circle cx="800" cy="481" r="14" fill="#ffd36e" fill-opacity="0.85"/>
+    <path d="M806 477 A7 7 0 1 0 807 484" fill="none" stroke="#5a4300" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M803 473 L807 477 L802 480" fill="none" stroke="#5a4300" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="826" y="487" font-size="15" fill="#e6defc">If one reply fails, the rest still finish.</text>
+  </g>
+</svg>

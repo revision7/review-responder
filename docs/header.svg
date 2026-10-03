@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t d">
+  <title id="t">Review Responder</title>
+  <desc id="d">A customer review turns into a warm, on-brand reply, ready to post.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1f4f"/>
+      <stop offset="0.55" stop-color="#4a2c6e"/>
+      <stop offset="1" stop-color="#8a3f62"/>
+    </linearGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#ffd9a8"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#12091f" flood-opacity="0.45"/>
+    </filter>
+    <path id="sparkle" d="M0,-12 C2,-2 2,-2 12,0 C2,2 2,2 0,12 C-2,2 -2,2 -12,0 C-2,-2 -2,-2 0,-12Z"/>
+    <marker id="head" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#ffd36e"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="400" rx="24" fill="url(#bg)"/>
+
+  <!-- background confetti -->
+  <g opacity="0.55">
+    <circle cx="610" cy="60" r="4" fill="#ffd36e"/>
+    <circle cx="660" cy="345" r="5" fill="#ff9fb2"/>
+    <circle cx="1235" cy="70" r="4" fill="#9fe3c8"/>
+    <circle cx="40" cy="355" r="5" fill="#ffd36e"/>
+    <circle cx="560" cy="300" r="3" fill="#9fe3c8"/>
+    <circle cx="1240" cy="350" r="3" fill="#ffd36e"/>
+    <circle cx="420" cy="50" r="3" fill="#ff9fb2"/>
+  </g>
+  <use href="#sparkle" transform="translate(585 110) scale(0.9)" fill="#ffd36e" opacity="0.8"/>
+  <use href="#sparkle" transform="translate(1225 210) scale(0.7)" fill="#ffffff" opacity="0.6"/>
+  <use href="#sparkle" transform="translate(48 60) scale(0.6)" fill="#ff9fb2" opacity="0.7"/>
+
+  <!-- left: title -->
+  <g font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+    <text x="64" y="160" font-size="62" font-weight="800" fill="url(#title)" letter-spacing="-1">Review Responder</text>
+    <text x="66" y="206" font-size="24" fill="#e6defc">On-brand replies to every review, in seconds.</text>
+
+    <g font-size="15" font-weight="600" fill="#2a1f4f">
+      <rect x="66" y="240" width="64" height="32" rx="16" fill="#ffd36e"/>
+      <text x="98" y="261" text-anchor="middle">CSV</text>
+      <rect x="140" y="240" width="112" height="32" rx="16" fill="#9fe3c8"/>
+      <text x="196" y="261" text-anchor="middle">Pasted text</text>
+      <rect x="262" y="240" width="210" height="32" rx="16" fill="#ff9fb2"/>
+      <text x="367" y="261" text-anchor="middle">Google Business Profile</text>
+    </g>
+    <text x="66" y="318" font-size="16" fill="#bfb3e6">Your voice in <tspan font-family="Consolas, Menlo, monospace" fill="#ffd9a8">brand.yaml</tspan> · Written by Claude · You approve every post</text>
+  </g>
+
+  <!-- right: review card -->
+  <g transform="rotate(-3 900 110)" filter="url(#shadow)" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+    <rect x="700" y="44" width="400" height="128" rx="16" fill="#ffffff"/>
+    <circle cx="734" cy="78" r="16" fill="#c9b8f2"/>
+    <text x="734" y="84" font-size="16" font-weight="700" fill="#2a1f4f" text-anchor="middle">J</text>
+    <text x="760" y="76" font-size="16" font-weight="700" fill="#2a1f4f">Jordan M.</text>
+    <text x="760" y="96" font-size="16" letter-spacing="1" fill="#f5a623">★★★★<tspan fill="#d9d4e4">★</tspan></text>
+    <text x="1080" y="78" font-size="13" fill="#8a82a0" text-anchor="end">Google</text>
+    <text x="720" y="132" font-size="16" fill="#3a3350">Best sourdough in town! The line was</text>
+    <text x="720" y="154" font-size="16" fill="#3a3350">a bit long on Saturday, though.</text>
+  </g>
+
+  <!-- arrow + magic -->
+  <path d="M1112 128 C1175 150 1180 205 1150 222" fill="none" stroke="#ffd36e" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" marker-end="url(#head)"/>
+  <use href="#sparkle" transform="translate(1190 168) scale(1.2)" fill="#ffd36e"/>
+  <use href="#sparkle" transform="translate(1212 146) scale(0.55)" fill="#ffffff"/>
+
+  <!-- right: reply card -->
+  <g transform="rotate(2 960 300)" filter="url(#shadow)" font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+    <rect x="740" y="218" width="420" height="152" rx="16" fill="#fff6e8"/>
+    <text x="762" y="248" font-size="13" font-weight="700" fill="#8a3f62" letter-spacing="1">YOUR REPLY</text>
+    <rect x="862" y="234" width="72" height="20" rx="10" fill="#d4f3e5"/>
+    <text x="898" y="249" font-size="12" font-weight="600" fill="#1f7a55" text-anchor="middle">positive</text>
+    <text x="762" y="278" font-size="16" fill="#3a3350">Thanks, Jordan! So glad the sourdough</text>
+    <text x="762" y="300" font-size="16" fill="#3a3350">hit the spot. We're working on that line!</text>
+    <text x="762" y="326" font-size="14" font-style="italic" fill="#7a6f8f">— Priya &amp; the Juniper &amp; Rye crew</text>
+    <rect x="1066" y="330" width="76" height="28" rx="14" fill="#4a2c6e"/>
+    <text x="1104" y="349" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">Post ✓</text>
+  </g>
+</svg>

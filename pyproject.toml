@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "review-responder"
+version = "0.1.0"
+description = "Generate on-brand replies to customer reviews from CSV, pasted text, or Google Business Profile."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "anthropic>=1.11",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+google = [
+    "google-auth>=2.30",
+    "google-auth-oauthlib>=1.2",
+    "requests>=2.32",
+]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+[project.scripts]
+review-responder = "review_responder.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["review_responder*"]
+
+[tool.setuptools.package-data]
+review_responder = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

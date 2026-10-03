@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review Responder</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232f6f4f'/><path d='M9 11h14M9 16h10M9 21h6' stroke='white' stroke-width='2.5' stroke-linecap='round'/></svg>">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <div>
+        <h1>Review Responder</h1>
+        <p class="subtitle" id="business-name">&nbsp;</p>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <section>
+        <h2>1. Load reviews</h2>
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="sample" role="tab">Sample</button>
+          <button class="tab" data-tab="paste" role="tab">Paste</button>
+          <button class="tab" data-tab="csv" role="tab">CSV</button>
+          <button class="tab" data-tab="google" role="tab">Google</button>
+        </div>
+
+        <div class="tab-body" data-body="sample">
+          <p class="hint">Eight demo reviews for a fictional bakery, from great to grumpy.</p>
+          <button class="btn" id="load-sample">Load sample reviews</button>
+        </div>
+
+        <div class="tab-body" data-body="paste" hidden>
+          <p class="hint">Separate reviews with a blank line. Ratings like <code>★★★★☆</code>, <code>4/5</code> or <code>Rating: 4</code> and author lines like <code>— Jane D.</code> are detected.</p>
+          <textarea id="paste-input" rows="9" placeholder="★★★★★&#10;Best croissants in town!&#10;— Jordan P."></textarea>
+          <button class="btn" id="load-paste">Parse reviews</button>
+        </div>
+
+        <div class="tab-body" data-body="csv" hidden>
+          <p class="hint">Needs a text column (<code>text</code>, <code>review</code>, <code>comment</code>…). Optional: <code>author</code>, <code>rating</code>, <code>date</code>, <code>id</code>.</p>
+          <label class="file">
+            <input type="file" id="csv-input" accept=".csv,text/csv">
+            <span>Choose CSV file…</span>
+          </label>
+        </div>
+
+        <div class="tab-body" data-body="google" hidden>
+          <p class="hint" id="google-hint">Fetch unanswered reviews from Google Business Profile.</p>
+          <button class="btn" id="load-google">Fetch reviews</button>
+        </div>
+      </section>
+
+      <section>
+        <details id="brand-details">
+          <summary><h2>2. Brand voice</h2><span class="hint">edit tone, rules &amp; examples</span></summary>
+          <p class="hint">Changes here apply to this session only. Edit <code>brand.yaml</code> to keep them.</p>
+          <textarea id="brand-input" rows="18" spellcheck="false" class="mono"></textarea>
+          <button class="btn ghost small" id="reset-brand">Reset to brand.yaml</button>
+        </details>
+      </section>
+    </aside>
+
+    <section class="results">
+      <div class="toolbar">
+        <div>
+          <h2>3. Review &amp; reply</h2>
+          <p class="hint" id="summary">No reviews loaded yet.</p>
+        </div>
+        <div class="toolbar-actions">
+          <button class="btn ghost" id="export" disabled>Export CSV</button>
+          <button class="btn primary" id="generate" disabled>Generate replies</button>
+        </div>
+      </div>
+      <div id="cards" class="cards">
+        <div class="empty">
+          <p><strong>Start with the sample data</strong> to see how it works, or paste your own reviews.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <template id="card-template">
+    <article class="card">
+      <header class="card-head">
+        <div>
+          <span class="author"></span>
+          <span class="stars" aria-hidden="true"></span>
+          <span class="sr-only rating-text"></span>
+        </div>
+        <div class="meta">
+          <span class="date"></span>
+          <span class="tag source"></span>
+        </div>
+      </header>
+      <p class="review-text"></p>
+      <div class="reply" hidden>
+        <div class="reply-meta">
+          <span class="tag sentiment"></span>
+          <span class="tag attention" hidden>Needs follow-up</span>
+          <span class="tag generator"></span>
+          <span class="notes"></span>
+        </div>
+        <textarea class="reply-text" rows="5" aria-label="Reply"></textarea>
+        <p class="error" hidden></p>
+        <div class="reply-actions">
+          <span class="words"></span>
+          <button class="btn ghost small regen">Regenerate</button>
+          <button class="btn ghost small copy">Copy</button>
+          <button class="btn small post" hidden>Post to Google</button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

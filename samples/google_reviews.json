@@ -1,0 +1,40 @@
+{
+  "reviews": [
+    {
+      "reviewId": "g-demo-101",
+      "reviewer": { "displayName": "Tom Reynolds" },
+      "starRating": "FIVE",
+      "comment": "Stopped in on a road trip and wish we lived closer. The morning bun and an oat flat white were perfect.",
+      "createTime": "2026-09-28T15:04:11Z",
+      "updateTime": "2026-09-28T15:04:11Z"
+    },
+    {
+      "reviewId": "g-demo-102",
+      "reviewer": { "displayName": "Sarah W." },
+      "starRating": "TWO",
+      "comment": "The staff member at the till was pretty short with me when I asked about nut-free options. Food was fine but I felt rushed.",
+      "createTime": "2026-09-27T18:22:40Z",
+      "updateTime": "2026-09-27T18:22:40Z"
+    },
+    {
+      "reviewId": "g-demo-103",
+      "reviewer": { "displayName": "Luis Fernández" },
+      "starRating": "FOUR",
+      "comment": "Great bread, cute space. They ran out of baguettes by 11am, so get there early!",
+      "createTime": "2026-09-25T10:51:02Z",
+      "updateTime": "2026-09-25T10:51:02Z"
+    },
+    {
+      "reviewId": "g-demo-104",
+      "reviewer": { "displayName": "Amy Chen" },
+      "starRating": "FIVE",
+      "comment": "Ordered sourdough for our wedding brunch and it was the hit of the day.",
+      "createTime": "2026-09-20T09:12:00Z",
+      "updateTime": "2026-09-20T09:12:00Z",
+      "reviewReply": {
+        "comment": "Congratulations Amy! We were honoured to be part of your day.",
+        "updateTime": "2026-09-21T08:00:00Z"
+      }
+    }
+  ]
+}

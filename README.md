@@ -12,7 +12,7 @@ Draft on-brand replies to customer reviews in seconds. Load reviews from a **CSV
 Requires Python 3.10+.
 
 ```bash
-git clone https://github.com/<you>/review-responder.git
+git clone https://github.com/revision7/review-responder.git
 cd review-responder
 
 python -m venv .venv

@@ -43,7 +43,7 @@ async function loadStatus() {
   $("#business-name").textContent = `Replying as ${s.business}`;
   const status = $("#status");
   status.replaceChildren(
-    s.generator === "claude"
+    s.generator !== "template"
       ? tag(`AI: ${s.model}`, "ok")
       : tag("Offline template mode (no API key)", "warn"),
     tag(s.google === "live" ? "Google: live" : "Google: demo data", s.google === "live" ? "ok" : ""),
@@ -168,7 +168,7 @@ function renderCard(review) {
   sentiment.textContent = reply.sentiment;
   sentiment.classList.add(reply.sentiment);
   node.querySelector(".attention").hidden = !reply.needs_attention;
-  node.querySelector(".generator").textContent = reply.generator === "claude" ? "AI" : "template";
+  node.querySelector(".generator").textContent = reply.generator !== "template" ? "AI" : "template";
   node.querySelector(".notes").textContent = reply.notes || "";
 
   const textarea = node.querySelector(".reply-text");

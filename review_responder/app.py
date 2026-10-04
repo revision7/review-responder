@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 
 from . import __version__, google_business
 from .config import ConfigError, load_brand_config, load_brand_yaml_text, parse_brand_yaml
-from .generator import claude_available, generate_replies
+from .generator import GenerationError, ai_available, generate_replies
 from .models import GeneratedReply, Review
 from .sources import SourceError, parse_csv, parse_text
 
@@ -53,7 +53,7 @@ def index():
 def status():
     brand = load_brand_config()
     return {
-        "generator": "claude" if claude_available() else "template",
+        "generator": brand.model.provider if ai_available(brand) else "template",
         "model": brand.model.name,
         "google": "live" if google_business.is_live() else "mock",
         "business": brand.business.name,
@@ -113,4 +113,7 @@ def generate(body: GenerateIn) -> list[GeneratedReply]:
         brand = parse_brand_yaml(body.brand_yaml) if body.brand_yaml else load_brand_config()
     except ConfigError as e:
         raise HTTPException(400, str(e)) from e
-    return generate_replies(body.reviews, brand, body.mode)
+    try:
+        return generate_replies(body.reviews, brand, body.mode)
+    except GenerationError as e:  # e.g. the openai package isn't installed
+        raise HTTPException(500, str(e)) from e

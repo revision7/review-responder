@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, Field, ValidationError
@@ -50,9 +51,14 @@ class Example(BaseModel):
 
 
 class ModelSettings(BaseModel):
+    provider: Literal["anthropic", "openai_compatible"] = "anthropic"
     name: str = "claude-opus-5-5"
-    effort: str = "low"  # low | medium | high | xhigh | max
+    effort: str = "low"  # low | medium | high | xhigh | max (anthropic only)
     concurrency: int = 4
+    # openai_compatible only:
+    base_url: str = ""  # e.g. http://localhost:11434/v1 for Ollama; empty = api.openai.com
+    api_key_env: str = "OPENAI_API_KEY"  # env var holding the key; not needed for local servers
+    strict_schema: bool = True  # false for servers that only support plain JSON mode
 
 
 class BrandConfig(BaseModel):

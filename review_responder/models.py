@@ -24,5 +24,5 @@ class GeneratedReply(BaseModel):
     sentiment: Sentiment
     needs_attention: bool
     notes: str = ""
-    generator: Literal["claude", "template"]
+    generator: Literal["claude", "openai_compatible", "template"]
     error: str = ""

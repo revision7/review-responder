@@ -7,7 +7,10 @@ from fastapi.testclient import TestClient
 from review_responder.config import ConfigError, load_brand_config, parse_brand_yaml
 from review_responder.generator import (
     ClaudeGenerator,
+    GenerationError,
+    OpenAICompatibleGenerator,
     TemplateGenerator,
+    ai_available,
     build_system_prompt,
     generate_replies,
 )
@@ -18,6 +21,7 @@ from review_responder.sources import SourceError, parse_csv, parse_rating, parse
 @pytest.fixture(autouse=True)
 def no_api_key(monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("ANTHROPIC_AUTH_TOKEN", raising=False)
     monkeypatch.delenv("GOOGLE_CLIENT_SECRETS", raising=False)
 
@@ -111,6 +115,59 @@ def test_claude_refusal_becomes_error(monkeypatch):
                         lambda brand, mode: ClaudeGenerator(brand, client=client))
     [result] = generate_replies([Review(id="r1", text="hi")], load_brand_config())
     assert result.error and result.needs_attention
+
+
+class FakeCompletions:
+    def __init__(self, content, finish_reason="stop", refusal=None):
+        self.content, self.finish_reason, self.refusal = content, finish_reason, refusal
+        self.calls = []
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        message = SimpleNamespace(content=self.content, refusal=self.refusal)
+        return SimpleNamespace(choices=[SimpleNamespace(message=message, finish_reason=self.finish_reason)])
+
+
+def _openai_brand(**model):
+    return parse_brand_yaml(
+        "model:\n  provider: openai_compatible\n  name: llama3.1\n"
+        + "".join(f"  {k}: {v}\n" for k, v in model.items())
+    )
+
+
+def test_openai_compatible_request_and_parse():
+    payload = {"reply": "Thanks Jane!", "sentiment": "positive", "needs_attention": False, "notes": ""}
+    completions = FakeCompletions(json.dumps(payload))
+    client = SimpleNamespace(chat=SimpleNamespace(completions=completions))
+    gen = OpenAICompatibleGenerator(_openai_brand(), client=client)
+    result = gen.generate(Review(id="r1", author="Jane", rating=5, text="Lovely."))
+
+    assert result.reply == "Thanks Jane!" and result.generator == "openai_compatible"
+    call = completions.calls[0]
+    assert call["model"] == "llama3.1"
+    assert call["response_format"]["type"] == "json_schema"
+    assert call["messages"][0]["role"] == "system" and "<review>" in call["messages"][1]["content"]
+
+
+def test_openai_compatible_plain_json_mode_and_errors():
+    client = SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions("not json")))
+    gen = OpenAICompatibleGenerator(_openai_brand(strict_schema="false"), client=client)
+    assert "Respond with only a JSON object" in gen.system
+    with pytest.raises(GenerationError, match="unexpected response format"):
+        gen.generate(Review(id="r1", text="hi"))
+    assert client.chat.completions.calls[0]["response_format"] == {"type": "json_object"}
+
+    refused = SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions(None, refusal="no")))
+    with pytest.raises(GenerationError, match="declined"):
+        OpenAICompatibleGenerator(_openai_brand(), client=refused).generate(Review(id="r1", text="hi"))
+
+
+def test_ai_available_per_provider(monkeypatch):
+    assert not ai_available(_openai_brand())
+    assert ai_available(_openai_brand(base_url="http://localhost:11434/v1"))  # local server, no key
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    assert ai_available(_openai_brand())
+    assert not ai_available(load_brand_config())  # anthropic provider still needs its own key
 
 
 def test_api_end_to_end_template_mode():

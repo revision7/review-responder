@@ -6,6 +6,7 @@ Draft on-brand replies to customer reviews in seconds. Load reviews from a **CSV
 
 - **Runs with no setup:** without an API key it uses built-in templates, so anyone can clone it and try it.
 - **AI replies with Claude:** add an Anthropic API key and replies are written by Claude, follow your rules and example replies, and mention details from each review.
+- **Or use another model:** OpenAI, a free local model through Ollama, or any OpenAI-compatible API (OpenRouter, Groq, LM Studio, vLLM). See [Using other models](#using-other-models).
 - **Brand voice as config:** tone, formality, word limit, sign-off, do/don't rules, banned phrases, and how to handle complaints all live in [`brand.yaml`](brand.yaml).
 - **A person approves every reply:** nothing is posted until you click **Post** and confirm.
 
@@ -56,9 +57,45 @@ Everything about how replies sound is in `brand.yaml`:
 | `rules` | `do` and `dont` lists plus `banned_phrases` (for example "We apologize for any inconvenience") |
 | `escalation` | Star rating at or below which a review counts as a complaint, the contact email or phone to offer, and how to handle it |
 | `examples` | 2–3 sample review/reply pairs. This shapes the voice more than anything else. |
-| `model` | Claude model, effort level (`low` is fast and plenty for replies), and how many replies to generate at once |
+| `model` | Provider and model name, effort level (Claude only; `low` is fast and plenty for replies), and how many replies to generate at once |
 
 You can also edit the YAML in the **Brand voice** panel of the web app to try changes live. Those edits last for the session; copy them back to `brand.yaml` to keep them. To use a different file, set `BRAND_CONFIG=path/to/other.yaml`.
+
+## Using other models
+
+Claude is the default. To use another model, install the extra and set `provider: openai_compatible` in the `model` section of `brand.yaml`:
+
+```bash
+pip install -e ".[openai]"
+```
+
+```yaml
+# OpenAI: set OPENAI_API_KEY in .env
+model:
+  provider: openai_compatible
+  name: gpt-4o-mini
+
+# Ollama (free, runs on your machine, no key): `ollama pull llama3.1` first
+model:
+  provider: openai_compatible
+  name: llama3.1
+  base_url: http://localhost:11434/v1
+
+# OpenRouter: hundreds of models behind one key
+model:
+  provider: openai_compatible
+  name: meta-llama/llama-3.1-70b-instruct
+  base_url: https://openrouter.ai/api/v1
+  api_key_env: OPENROUTER_API_KEY
+```
+
+Groq, Together, LM Studio, vLLM and other servers that speak the OpenAI Chat Completions API work the same way: set `base_url`, and `api_key_env` if the key is in a different variable.
+
+Some things to know:
+
+- The app asks for output that matches the reply JSON schema. If a server rejects that (some only support plain JSON mode), set `strict_schema: false`. The schema is then described in the prompt, and replies that don't match it show an error on that card.
+- `effort` and server-side fallbacks only apply to Claude.
+- Small local models follow the brand rules less reliably than large hosted ones. Read their replies carefully before posting.
 
 ## Input formats
 
@@ -207,7 +244,7 @@ pip install -e ".[dev]"
 pytest
 ```
 
-The tests run without an API key: the Claude client is replaced with a fake, and Google uses the mock file.
+The tests run without an API key: the model clients are replaced with fakes, and Google uses the mock file.
 
 Project layout:
 
@@ -215,7 +252,7 @@ Project layout:
 review_responder/
   app.py              FastAPI routes
   config.py           brand.yaml schema and loader
-  generator.py        Claude + template reply generators
+  generator.py        Claude, OpenAI-compatible + template reply generators
   sources.py          CSV and pasted-text parsing
   google_business.py  Google Business Profile client (live or mock)
   static/             web UI (plain HTML/CSS/JS, no build step)
@@ -226,7 +263,7 @@ tests/
 
 ## Notes
 
-- **Cost:** each reply is one Claude API call, usually a few hundred tokens in and out. At `effort: low` a batch of dozens of reviews typically costs cents. Check current pricing at <https://www.anthropic.com/pricing>.
+- **Cost:** each reply is one Claude API call, usually a few hundred tokens in and out. At `effort: low` a batch of dozens of reviews typically costs cents. Check current pricing at <https://www.anthropic.com/pricing>. Other providers price differently, and local models through Ollama are free.
 - **Security:** this is a local tool with no login. Don't expose it to the internet as-is (for example with `--host 0.0.0.0` on a public server). Anyone who can reach it can use your API key and post to your Google profile.
 - **Review the drafts:** the AI is told not to invent offers or policies, but you're responsible for what gets posted.
 

@@ -2,6 +2,14 @@
 
 Release notes based on the project's current documented features.
 
+## [Unreleased]
+
+### Added
+
+- Use OpenAI, local models through Ollama, or any OpenAI-compatible API
+  (OpenRouter, Groq, LM Studio, vLLM) by setting `model.provider:
+  openai_compatible` in `brand.yaml`. Claude remains the default.
+
 ## [0.1.0]
 
 ### Added

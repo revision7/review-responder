@@ -1,4 +1,4 @@
-"""Reply generation: Claude when an API key is available, templates otherwise."""
+"""Reply generation: Claude or an OpenAI-compatible model when configured, templates otherwise."""
 
 from __future__ import annotations
 
@@ -45,6 +45,21 @@ class GenerationError(RuntimeError):
 
 def claude_available() -> bool:
     return bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN"))
+
+
+def ai_available(brand: BrandConfig) -> bool:
+    """True if the configured provider has what it needs (a key, or a local server URL)."""
+    m = brand.model
+    if m.provider == "openai_compatible":
+        return bool(os.environ.get(m.api_key_env) or m.base_url)
+    return claude_available()
+
+
+def _parse_payload(text: str) -> _ReplyPayload:
+    try:
+        return _ReplyPayload.model_validate(json.loads(text))
+    except (json.JSONDecodeError, ValidationError) as e:
+        raise GenerationError("The model returned an unexpected response format.") from e
 
 
 def _bullets(items: list[str]) -> str:
@@ -147,11 +162,73 @@ class ClaudeGenerator:
         if response.stop_reason == "refusal":
             raise GenerationError("The model declined to reply to this review.")
         text = "".join(block.text for block in response.content if block.type == "text")
-        try:
-            payload = _ReplyPayload.model_validate(json.loads(text))
-        except (json.JSONDecodeError, ValidationError) as e:
-            raise GenerationError("The model returned an unexpected response format.") from e
+        payload = _parse_payload(text)
         return GeneratedReply(review_id=review.id, generator="claude", **payload.model_dump())
+
+
+class OpenAICompatibleGenerator:
+    """Any Chat Completions API: OpenAI, Ollama, OpenRouter, Groq, LM Studio, vLLM, ..."""
+
+    name = "openai_compatible"
+
+    def __init__(self, brand: BrandConfig, client=None):
+        self.brand = brand
+        m = brand.model
+        if client is None:
+            try:
+                import openai
+            except ImportError as e:
+                raise GenerationError(
+                    'provider "openai_compatible" needs the openai package: pip install -e ".[openai]"'
+                ) from e
+            # Local servers (Ollama, LM Studio) ignore the key, but the SDK requires one.
+            api_key = os.environ.get(m.api_key_env) or "not-needed"
+            client = openai.OpenAI(api_key=api_key, base_url=m.base_url or None)
+        self.client = client
+        self.system = build_system_prompt(brand)
+        if not m.strict_schema:
+            self.system += (
+                "\n\n## Output format\nRespond with only a JSON object matching this schema:\n"
+                + json.dumps(REPLY_SCHEMA)
+            )
+
+    def generate(self, review: Review) -> GeneratedReply:
+        import openai
+
+        if self.brand.model.strict_schema:
+            response_format = {
+                "type": "json_schema",
+                "json_schema": {"name": "review_reply", "schema": REPLY_SCHEMA, "strict": True},
+            }
+        else:
+            response_format = {"type": "json_object"}
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.brand.model.name,
+                messages=[
+                    {"role": "system", "content": self.system},
+                    {"role": "user", "content": build_user_message(review)},
+                ],
+                response_format=response_format,
+            )
+        except openai.AuthenticationError as e:
+            raise GenerationError(f"Invalid API key (check {self.brand.model.api_key_env}).") from e
+        except openai.RateLimitError as e:
+            raise GenerationError("Rate limited by the model provider; try again shortly.") from e
+        except openai.APIStatusError as e:
+            raise GenerationError(f"Model provider error ({e.status_code}): {e.message}") from e
+        except openai.APIConnectionError as e:
+            where = self.brand.model.base_url or "the OpenAI API"
+            raise GenerationError(f"Could not reach {where}.") from e
+
+        choice = response.choices[0]
+        if getattr(choice.message, "refusal", None):
+            raise GenerationError("The model declined to reply to this review.")
+        if choice.finish_reason == "length":
+            raise GenerationError("The model's reply was cut off before it finished.")
+        payload = _parse_payload(choice.message.content or "")
+        return GeneratedReply(review_id=review.id, generator="openai_compatible", **payload.model_dump())
 
 
 # --- Offline template mode ---------------------------------------------------
@@ -229,14 +306,16 @@ class TemplateGenerator:
             reply=reply,
             sentiment=sentiment,
             needs_attention=sentiment == "negative" or low,
-            notes="Template reply (offline mode). Set ANTHROPIC_API_KEY for tailored replies.",
+            notes="Template reply (offline mode). Configure an AI model for tailored replies.",
             generator="template",
         )
 
 
 def make_generator(brand: BrandConfig, mode: str = "auto"):
-    if mode == "template" or (mode == "auto" and not claude_available()):
+    if mode == "template" or (mode == "auto" and not ai_available(brand)):
         return TemplateGenerator(brand)
+    if brand.model.provider == "openai_compatible":
+        return OpenAICompatibleGenerator(brand)
     return ClaudeGenerator(brand)
 
 

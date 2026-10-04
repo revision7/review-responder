@@ -57,6 +57,12 @@ examples:
       — Priya & the Juniper & Rye crew
 
 model:
+  provider: anthropic        # anthropic | openai_compatible
   name: claude-opus-5-5
-  effort: low                # low | medium | high (higher = slower, more thoughtful)
+  effort: low                # low | medium | high (higher = slower, more thoughtful); Claude only
   concurrency: 4             # replies generated in parallel
+  # For OpenAI, Ollama, OpenRouter, Groq, LM Studio and other OpenAI-compatible APIs,
+  # set provider: openai_compatible, a model name, and (if not OpenAI itself) base_url:
+  # base_url: http://localhost:11434/v1   # Ollama
+  # api_key_env: OPENAI_API_KEY           # env var holding the key; local servers need none
+  # strict_schema: true                   # set false if the server rejects json_schema output
